@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mimar Sinan'ın Eserleri</title>
+<style>
+*{box-sizing:border-box} body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f3f0e8;color:#242424}
+header{background:linear-gradient(135deg,#24352b,#806b45);color:white;text-align:center;padding:55px 20px}
+header h1{font-size:42px;margin:0 0 12px} header p{font-size:18px;margin:0}
+.container{max-width:1200px;margin:auto;padding:35px 20px}
+.notice{background:white;border-left:5px solid #806b45;padding:15px 18px;border-radius:10px;margin-bottom:28px;box-shadow:0 3px 12px #0001}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px}
+.card{background:white;border-radius:16px;overflow:hidden;box-shadow:0 5px 18px #0002;transition:.2s}
+.card:hover{transform:translateY(-4px)}
+.photo{width:100%;height:210px;object-fit:cover;background:#ddd;display:block}
+.info{padding:17px}.info h2{font-size:20px;margin:0 0 8px;color:#3b3022}.place{color:#806b45;font-weight:bold;margin-bottom:6px}.date{font-weight:bold;color:#555;margin-bottom:10px}
+.desc{font-size:14px;line-height:1.5;color:#555}
+.loading{text-align:center;padding:30px;color:#666}
+footer{text-align:center;padding:30px;background:#242b26;color:#eee;margin-top:40px;font-size:14px}
+@media(max-width:600px){header h1{font-size:31px}.photo{height:190px}}
+</style>
+</head>
+<body>
+<header>
+<h1>Mimar Sinan'ın Eserleri</h1>
+<p>Osmanlı mimarisinin büyük ustasının seçilmiş eserleri</p>
+</header>
+<main class="container">
+<div class="notice">
+<strong>Not:</strong> Görseller Wikimedia Commons üzerinden otomatik olarak aranır. 
+Her görselin altında eser adı ve bulunduğu yer yazmaktadır.
+</div>
+<div id="grid" class="grid"></div>
+<div id="loading" class="loading">Görseller yükleniyor...</div>
+</main>
+<footer>
+Mimar Sinan'ın eserleri hakkında hazırlanmış eğitim amaçlı web sitesi.
+</footer>
+<script>
+const works = [
+["Selimiye Camii","Edirne","Selimiye Mosque Edirne","1568-1575","II. Selim tarafından yaptırılan Selimiye Camii, Mimar Sinan'ın ustalık dönemi eseri olarak kabul edilir. Dört minaresi ve büyük kubbesiyle Osmanlı klasik mimarisinin en önemli yapılarındandır. Sinan, Selimiye'yi kendi eserleri arasında 'ustalık eseri' olarak nitelendirmiştir."],
+["Süleymaniye Camii","İstanbul","Suleymaniye Mosque Istanbul","1550-1557","Kanuni Sultan Süleyman'ın emriyle yaptırılan Süleymaniye, İstanbul'un siluetini belirleyen büyük bir külliyenin merkezidir. Caminin yanında medreseler, imaret, darüşşifa ve başka yapılar bulunur. Mimar Sinan'ın olgunluk döneminin en önemli eserlerinden biridir."],
+["Şehzade Camii","İstanbul","Sehzade Mosque Istanbul","1543-1548","Kanuni Sultan Süleyman, genç yaşta ölen oğlu Şehzade Mehmed'in anısına bu külliyeyi yaptırmıştır. Mimar Sinan'ın erken dönem önemli eserlerinden olan cami, merkezî kubbe düzeniyle sonraki büyük camiler için önemli bir adım oluşturmuştur."],
+["Mihrimah Sultan Camii (Edirnekapı)","İstanbul","Mihrimah Sultan Mosque Edirnekapi","1562-1565","Kanuni Sultan Süleyman'ın kızı Mihrimah Sultan adına yaptırılan cami, Edirnekapı'da İstanbul surlarına yakın bir konumdadır. Geniş pencereleri sayesinde iç mekânı aydınlık olan yapı, Mimar Sinan'ın zarif tasarımlarından biridir."],
+["Mihrimah Sultan Camii (Üsküdar)","İstanbul","Mihrimah Sultan Mosque Uskudar","1546-1548","Üsküdar'daki cami, Mihrimah Sultan adına yaptırılan külliyenin bir parçasıdır. İskeleye yakın konumu sayesinde İstanbul Boğazı'na açılan önemli bir şehir silueti oluşturur. Yapı Mimar Sinan'ın erken dönem eserleri arasında gösterilir."],
+["Rüstem Paşa Camii","İstanbul","Rustem Pasha Mosque Istanbul","1561-1563","Kanuni Sultan Süleyman'ın damadı ve sadrazamı Rüstem Paşa adına yaptırılmıştır. Tahtakale'deki cami, özellikle zengin İznik çinileriyle tanınır. Mimar Sinan, küçük bir arsa üzerinde etkileyici bir iç mekân oluşturmuştur."],
+["Kılıç Ali Paşa Camii","İstanbul","Kilich Ali Pasha Mosque Istanbul","1580-1581","Kaptan-ı Derya Kılıç Ali Paşa tarafından Tophane'de yaptırılmıştır. Yapı, denizcilikle bağlantılı külliyenin merkezindedir. Mimar Sinan'ın hayatının son dönemine ait eserlerinden biri olarak bilinir."],
+["Sokullu Mehmed Paşa Camii (Kadırga)","İstanbul","Sokollu Mehmed Pasha Mosque Kadirga","1571-1572","Sokullu Mehmed Paşa ile eşi İsmihan Sultan tarafından yaptırılmıştır. Kadırga'daki cami, eğimli araziye yerleşimi ve içindeki çini ve mimari ayrıntılarıyla dikkat çeker. Mimar Sinan'ın ileri tasarım anlayışını gösteren eserlerdendir."],
+["Sokullu Mehmed Paşa Camii (Azapkapı)","İstanbul","Sokollu Mehmed Pasha Mosque Azapkapi","1577-1578","Azapkapı'da Haliç kıyısına yakın konumlanan cami, Sokullu Mehmed Paşa tarafından yaptırılmıştır. Küçük bir alanda güçlü bir merkezî mekân etkisi oluşturması, yapının dikkat çekici özelliklerindendir."],
+["Atik Valide Külliyesi","İstanbul","Atik Valide Mosque Complex Istanbul","1570'ler","II. Selim'in annesi Nurbanu Sultan adına Üsküdar'da yaptırılan büyük külliyedir. Cami, medrese, darüşşifa, imaret ve başka birimlerden oluşan kompleks, Mimar Sinan'ın İstanbul'daki en kapsamlı külliye tasarımlarından biridir."],
+["Haseki Hürrem Sultan Külliyesi","İstanbul","Haseki Hurrem Sultan Complex Istanbul","1539-1551","Hürrem Sultan'ın İstanbul'da yaptırdığı ilk büyük hayır eserlerinden biridir. Külliyede cami, medrese, imaret ve darüşşifa gibi bölümler bulunuyordu. Mimar Sinan'ın İstanbul'daki ilk büyük eserleri arasında yer alır."],
+["Haseki Hürrem Sultan Hamamı","İstanbul","Haseki Hurrem Sultan Hamam Istanbul","1556-1557","Ayasofya ile Sultanahmet arasında yer alan hamam, Hürrem Sultan tarafından yaptırılmıştır. Kadınlar ve erkekler için ayrı bölümleri bulunan yapı, döneminin büyük hamamlarından biri olarak tasarlanmıştır."],
+["Kılıç Ali Paşa Hamamı","İstanbul","Kilich Ali Pasha Hamam Istanbul","1580-1583","Kılıç Ali Paşa Külliyesi'nin bir parçası olan hamam Tophane'de bulunur. Mimar Sinan'ın son dönem eserleri arasında sayılan yapı, klasik Osmanlı hamam mimarisinin özelliklerini taşır."],
+["Büyükçekmece Köprüsü","İstanbul","Buyukcekmece Bridge Mimar Sinan","1566-1567","Kanuni Sultan Süleyman'ın emriyle Büyükçekmece'de inşa edilen taş köprü, yaklaşık 636 metre uzunluğundadır. Köprü, Mimar Sinan'ın su geçişleri ve arazi koşullarına uyum sağlayan mühendislik çözümlerinin önemli örneklerinden biridir."],
+["Mağlova Kemeri","İstanbul","Maglova Aqueduct Mimar Sinan","1550'ler","Kırkçeşme su sisteminin önemli parçalarından olan Mağlova Kemeri, İstanbul'a su taşımak amacıyla inşa edilmiştir. İki katlı kemer sistemi ve sağlam taşıyıcı düzeni, Mimar Sinan'ın mimarlıkla mühendisliği birleştiren çalışmalarını gösterir."],
+["Uzun Kemer","İstanbul","Uzun Kemer Mimar Sinan","1550'ler","Kırkçeşme su yolları kapsamında İstanbul'un su ihtiyacını karşılamak amacıyla kullanılan yapılardandır. Kemerburgaz çevresindeki su yapıları, Mimar Sinan'ın büyük su sistemi çalışmalarının parçaları arasında yer alır."],
+["Sokollu Mehmed Paşa Köprüsü","Vişegrad","Mehmed Pasha Sokolovic Bridge Visegrad","1571-1577","Drina Nehri üzerindeki köprü, Sokollu Mehmed Paşa tarafından yaptırılmıştır. Köprü 11 kemerli yapısıyla tanınır. Mimar Sinan'ın adı bu eserle ilişkilendirilse de farklı kaynaklarda tasarım ve uygulama konusunda çeşitli değerlendirmeler bulunmaktadır."],
+["Sokollu Mehmed Paşa (Sinanlı) Köprüsü","Kırklareli / Alpullu","Sinanli Bridge Alpullu","16. yüzyıl","Alpullu yakınındaki köprü, Sokollu Mehmed Paşa'nın yaptırdığı köprüler arasında yer alır. Taş kemerli yapı, Trakya'daki ulaşım ağının önemli tarihî örneklerinden biridir."],
+["Sultan II. Selim Türbesi","İstanbul","Sultan Selim II Tomb Hagia Sophia","1577-1578","II. Selim'in Ayasofya haziresindeki türbesi, ölümünden sonra oğlu III. Murad tarafından yaptırılmıştır. Mimar Sinan'ın tasarladığı türbe, klasik Osmanlı türbe mimarisinin dikkat çekici örneklerinden biridir."],
+["Barbaros Hayreddin Paşa Türbesi","İstanbul","Barbaros Hayreddin Pasha Tomb Istanbul","1541","Beşiktaş'ta bulunan türbe, Osmanlı denizcisi Barbaros Hayreddin Paşa'nın ölümünden sonra yapılmıştır. Yapı, Mimar Sinan'ın erken dönem İstanbul eserleri arasında yer alır ve denizcilik tarihinin önemli isimlerinden birinin mezarını barındırır."]
+];
+
+const grid=document.getElementById("grid");
+const loading=document.getElementById("loading");
+
+function card(work, url){
+  const [name,place,query,date,history]=work;
+  const el=document.createElement("article");
+  el.className="card";
+  el.innerHTML=`<img class="photo" src="${url}" alt="${name}" loading="lazy"
+    onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/640px-No-Image-Placeholder.svg.png'">
+    <div class="info"><h2>${name}</h2>
+    <div class="place">📍 ${place}</div>
+    <div class="date">📅 ${date}</div>
+    <div class="desc">${history}</div></div>`;
+  grid.appendChild(el);
+}
+
+async function findImage(work){
+  const query=encodeURIComponent(work[2]);
+  const api=`https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=${query}&gsrnamespace=6&gsrlimit=1&prop=imageinfo&iiprop=url&iiurlwidth=900&format=json&origin=*`;
+  try{
+    const r=await fetch(api); const data=await r.json();
+    const pages=data.query?.pages||{};
+    const first=Object.values(pages)[0];
+    return first?.imageinfo?.[0]?.thumburl || first?.imageinfo?.[0]?.url || null;
+  }catch(e){return null}
+}
+
+(async()=>{
+  for(const work of works){
+    const url=await findImage(work);
+    if(url) card(work,url);
+  }
+  loading.style.display="none";
+})();
+</script>
+</body>
+</html>
